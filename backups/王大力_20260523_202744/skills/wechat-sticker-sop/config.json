@@ -1,0 +1,125 @@
+{
+  "name": "wechat-sticker-sop",
+  "version": "1.2.0",
+  "description": "微信服务号贴图制作一站式SOP：信息调研→文案生成→配图方案→候选图生成→组装→发布草稿",
+  "author": "王大力",
+  "category": "publishing",
+  "emoji": "🖼️",
+  "triggers": {
+    "exact": [
+      "做贴图",
+      "制作贴图",
+      "发贴图",
+      "微信贴图",
+      "公众号贴图",
+      "wss",
+      "WSS"
+    ],
+    "patterns": [
+      "制作.*贴图",
+      "做.*贴图",
+      "发.*贴图",
+      "微信.*贴图",
+      "公众号.*贴图",
+      "贴图.*制作",
+      "贴图.*发布",
+      "图片消息",
+      "sticker",
+      "wechat.*sticker",
+      "公众号.*图片",
+      "微信.*图片消息",
+      "服务号.*贴图"
+    ],
+    "keywords": [
+      "贴图",
+      "sticker",
+      "图片消息",
+      "wss",
+      "WSS",
+      "微信贴图",
+      "公众号贴图",
+      "发图",
+      "做图",
+      "生成贴图",
+      "制作图片",
+      "公众号图片",
+      "微信图片"
+    ]
+  },
+  "dependencies": {
+    "skills": [
+      "tavily-search",
+      "xiaohongshu-writer-expert",
+      "seedream5",
+      "image-generation",
+      "redbook-image-generator",
+      "wechat-sticker-publisher"
+    ],
+    "env": {
+      "required": [
+        "TAVILY_API_KEY",
+        "VOLC_API_KEY",
+        "WECHAT_APP_ID",
+        "WECHAT_APP_SECRET"
+      ],
+      "optional": [
+        "OPENAI_API_KEY",
+        "GEMINI_API_KEY",
+        "BFL_API_KEY"
+      ]
+    },
+    "bins": ["uv", "node", "python3"]
+  },
+  "workflow": {
+    "steps": [
+      {
+        "id": 0,
+        "name": "信息调研",
+        "skill": "tavily-search",
+        "description": "搜索主题相关最新资讯，提取关键信息形成调研摘要",
+        "auto": true
+      },
+      {
+        "id": 1,
+        "name": "文案&配图方案",
+        "skill": "xiaohongshu-writer-expert",
+        "description": "结合调研摘要，生成小红书风格文案和配图方案",
+        "auto": true
+      },
+      {
+        "id": 2,
+        "name": "候选配图生成",
+        "skill": "seedream5 + image-generation + redbook-image-generator",
+        "description": "三引擎并行：Seedream5(2张) + Image Generation(1张) + Redbook(2张)，共5张候选图",
+        "auto": true,
+        "output": {
+          "seedream5": 2,
+          "image-generation": 1,
+          "redbook": 2,
+          "total": 5
+        }
+      },
+      {
+        "id": 3,
+        "name": "人工挑选",
+        "skill": null,
+        "description": "用户选择封面图和内容图",
+        "auto": false
+      },
+      {
+        "id": 4,
+        "name": "组装排版",
+        "skill": "wechat-sticker-publisher",
+        "description": "将选中图片组装成贴图草稿",
+        "auto": true
+      },
+      {
+        "id": 5,
+        "name": "手动发布",
+        "skill": null,
+        "description": "用户在公众号后台确认发布",
+        "auto": false
+      }
+    ]
+  }
+}

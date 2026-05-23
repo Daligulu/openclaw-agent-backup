@@ -1,0 +1,322 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "8efd487a-a99c-4489-8c38-e8a147916750",
+      "agentId": "main",
+      "name": "Tech-News-Digest 热点监控 (9:00-24:00, 每4小时)",
+      "enabled": false,
+      "createdAtMs": 1771466120471,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9-23/4 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行Tech-News-Digest心跳监控：1. 运行tech-news-digest pipeline扫描近12小时热点 2. 分析AI领域选题（删除狗狗领域）3. 篮球领域扩展范围：包括NBA、FIBA国际篮球、CBA中国篮球联赛 4. 按主动汇报原则判断是否需要立即汇报（好选题/热点/数据洞察/工作进展）5. 每条选题必须包含来源链接地址"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "8375286112"
+      },
+      "state": {}
+    },
+    {
+      "id": "7d8fbcd0-659f-4498-8f81-47e4765605d8",
+      "agentId": "main",
+      "name": "每日记忆整理",
+      "enabled": true,
+      "createdAtMs": 1771517675467,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 0 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行每日记忆整理：1. 运行 /root/.openclaw/workspace/memory-maintenance.sh 2. 检查记忆文件状态 3. 如果有重要发现，简要汇报"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "telegram:8375286112"
+      },
+      "state": {}
+    },
+    {
+      "id": "27e814cd-385b-4704-a288-6d5638e0b70b",
+      "agentId": "main",
+      "name": "EvoMap同步（每24小时）",
+      "enabled": true,
+      "createdAtMs": 1771739870386,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 86400000,
+        "anchorMs": 1771739870386
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行EvoMap同步：1. 进入evolver目录：cd /root/.openclaw/workspace/evolver 2. 使用修复脚本确保正确的环境变量：./run-with-env.sh scripts/a2a_export.js --hello --protocol --persist 3. 导出我们的资产：./run-with-env.sh scripts/a2a_export.js --protocol --persist --include-events 4. 记录执行结果到记忆文件"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "8375286112"
+      },
+      "state": {}
+    },
+    {
+      "id": "1535a71c-fda1-4954-a460-2687cd890b53",
+      "agentId": "main",
+      "name": "OpenClaw备份（每12小时）",
+      "enabled": true,
+      "createdAtMs": 1772510988967,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 43200000,
+        "anchorMs": 1773204697651
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行OpenClaw完整备份。运行命令：/root/.openclaw/workspace/backup-openclaw.sh。备份完成后会自动推送详细报告到Telegram。"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "telegram:8375286112"
+      },
+      "state": {}
+    },
+    {
+      "id": "cd6ff3bd-a702-4efe-8c9c-605582e19c08",
+      "agentId": "main",
+      "sessionKey": "agent:main:telegram:direct:8375286112",
+      "name": "EvoMap心跳（每15分钟）",
+      "enabled": false,
+      "createdAtMs": 1773382754762,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 900000,
+        "anchorMs": 1773382754762
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行EvoMap心跳保持节点在线：bash /root/.openclaw/workspace/evolver/auto-heartbeat.sh"
+      },
+      "delivery": {
+        "mode": "announce",
+        "to": "8375286112",
+        "channel": "telegram"
+      },
+      "state": {}
+    },
+    {
+      "id": "154e72de-73c6-4c15-bc8c-2086003ad6bb",
+      "agentId": "main",
+      "sessionKey": "agent:main:telegram:direct:8375286112",
+      "name": "EvoMap积分监控（每2小时）",
+      "enabled": false,
+      "createdAtMs": 1773505355080,
+      "schedule": {
+        "everyMs": 7200000,
+        "kind": "every",
+        "anchorMs": 1773505355080
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "检查EvoMap积分变化并报告。执行: curl -s -X POST 'https://evomap.ai/a2a/hello' -H 'Content-Type: application/json' -H 'Authorization: Bearer $(cat ~/.evomap/node_secret)' -d '{\"protocol\":\"gep-a2a\",\"protocol_version\":\"1.0.0\",\"message_type\":\"hello\",\"sender_id\":\"node_d0cf2a3b4b3946a492a8e72e381e1198\"}' | jq -r '\"积分: \\(.payload.credit_balance) | 声誉: \\(.payload.reputation)\"'",
+        "thinking": "off"
+      },
+      "delivery": {
+        "channel": "telegram",
+        "mode": "announce",
+        "to": "8375286112"
+      },
+      "state": {}
+    },
+    {
+      "id": "d73b9612-509f-4942-83be-987268c48f97",
+      "name": "AI Builders Digest",
+      "enabled": false,
+      "createdAtMs": 1774966640465,
+      "schedule": {
+        "kind": "cron",
+        "expr": "5 14 * * *",
+        "staggerMs": 0
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Run the follow-builders skill: execute prepare-digest.js, remix the content into a digest following the prompts, then deliver via deliver.js"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "feishu",
+        "to": "ou_6be517fc21eba03cf7bef325a876d7f8"
+      },
+      "state": {}
+    },
+    {
+      "id": "621a1963-cf96-4bc3-90bf-18175f198d0c",
+      "name": "Memory Dreaming Promotion",
+      "description": "[managed-by=memory-core.short-term-promotion] Promote weighted short-term recalls into MEMORY.md (limit=10, minScore=0.800, minRecallCount=3, minUniqueQueries=3, recencyHalfLifeDays=14, maxAgeDays=30).",
+      "enabled": true,
+      "createdAtMs": 1776131479439,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 4 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "main",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "__openclaw_memory_core_short_term_promotion_dream__"
+      },
+      "state": {}
+    },
+    {
+      "id": "cf9ad24f-301f-41f1-8195-277be260e206",
+      "agentId": "main",
+      "sessionKey": "agent:main:lightclawbot:direct:100009000028",
+      "name": "OpenClaw 孤儿 lock 清理",
+      "enabled": true,
+      "createdAtMs": 1778161434488,
+      "schedule": {
+        "everyMs": 600000,
+        "kind": "every",
+        "anchorMs": 1778161434488
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "运行 /root/.openclaw/workspace/scripts/cleanup-orphan-locks.sh 检查并清理孤儿 session lock 文件。如果发现并清理了孤儿 lock，报告详情。如果没有异常，回复 HEARTBEAT_OK。",
+        "timeoutSeconds": 120
+      },
+      "delivery": {
+        "mode": "announce",
+        "to": "100009000028",
+        "channel": "lightclawbot"
+      },
+      "state": {}
+    },
+    {
+      "id": "a7c23d45-ef70-4575-bf9d-d54d08d61261",
+      "name": "狗狗生活小百科-每日写文",
+      "enabled": true,
+      "createdAtMs": 1778464155146,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 7 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "你是\"狗狗生活小百科\"公众号的自动写文助手。请严格按以下步骤执行：\n\n## 第1步：加载 IMA 凭证\n```bash\nIMA_CLIENT_ID=\"${IMA_OPENAPI_CLIENTID:-$(cat ~/.config/ima/client_id 2>/dev/null)}\"\nIMA_API_KEY=\"${IMA_OPENAPI_APIKEY:-$(cat ~/.config/ima/api_key 2>/dev/null)}\"\nima_api() {\n  curl -s -X POST \"https://ima.qq.com/$1\" \\\n    -H \"ima-openapi-clientid: $IMA_CLIENT_ID\" \\\n    -H \"ima-openapi-apikey: $IMA_API_KEY\" \\\n    -H \"Content-Type: application/json\" \\\n    -d \"$2\"\n}\n```\n\n## 第2步：从 IMA 笔记中寻找选题素材\n搜索狗狗相关笔记，读取内容后**只选取其中一个章节或几个段落**作为选题素材。\n\n```bash\nima_api \"openapi/note/v1/search_note_book\" '{\"search_type\": 0, \"query_info\": {\"title\": \"狗\"}, \"start\": 0, \"end\": 20}'\nima_api \"openapi/note/v1/search_note_book\" '{\"search_type\": 0, \"query_info\": {\"title\": \"爱犬\"}, \"start\": 0, \"end\": 20}'\n```\n\n对找到的笔记读取正文，**从中挑选一个具体角度**：\n```bash\nima_api \"openapi/note/v1/get_doc_content\" '{\"doc_id\": \"笔记ID\", \"target_content_format\": 0}'\n```\n\n也可以从\"狗狗星球\"知识库搜索：\n```bash\nima_api \"openapi/wiki/v1/search_knowledge\" '{\"query\": \"狗狗\", \"knowledge_base_id\": \"K2Nq_oMZRI2elIbbjOtos4mAgD9CUuDWpfqX-Mmnimo=\", \"cursor\": \"\"}'\n```\n\n## 第3步：检查已用选题（避免重复 — 双重检查）\n\n⚠️ 必须同时检查两个选题池：\n\n1. 全局共享选题池（包含所有4个任务的已用选题）：\n```bash\ncat /root/.openclaw/workspace/workflows/shared-topics-used.md\n```\n\n2. 狗狗专用选题池（向后兼容）：\n```bash\ncat /root/.openclaw/workspace/workflows/dog-shared/topics-used.md\n```\n\n从笔记内容中**挑选一个两个池中都没有的全新角度**。\n\n## 第4步：选题决策\n从笔记内容中**挑选一个之前没写过的具体角度**。例如：\n- 笔记提到\"4D肉\"→ 选题：\"如何辨别劣质狗粮？\"\n- 笔记提到\"室内vs室外\"→ 选题：\"为什么室内养狗更安全？\"\n- 笔记提到\"幼犬护理\"→ 选题：\"幼犬到家第一周该做什么\"\n- 笔记提到\"老年犬\"→ 选题：\"狗狗老了怎么照顾？\"\n\n## 第5步：切换 WeWrite 配置到\"狗狗生活小百科\"账号\n```bash\ncd /root/.openclaw/skills/wewrite\ncp config.yaml config.yaml.bak\nsed -i 's/appid: \"wx42b46ea46863a720\"/appid: \"wx27855f8407f2c81c\"/' config.yaml\nsed -i 's/secret: \"5bd9348a8a4dd8c23cf0059036461ea2\"/secret: \"01b109d8aa7d88c0c86aa28bc2f008ff\"/' config.yaml\n```\n\n## 第6步：用 WeWrite 写文章并发布到草稿箱\n读取 /root/.openclaw/skills/wewrite/SKILL.md 和 style.yaml，按主管道 Step 1-8 执行。\n- 目标账号：狗狗生活小百科\n- 风格：温暖实用，像资深铲屎官分享经验\n- 基于第4步选取的角度展开，1500-2500字\n- 确保推送到微信草稿箱\n\n## ⚠️ 第6步补充：必须生成封面图！\n写完文章后，**必须执行封面图生成**：\n1. 从文章中提取 3-5 个具体实体（如：狗、狗粮、厨房等）\n2. 生成封面提示词，调用 image_gen.py 生成封面：\n```bash\npython3 /root/.openclaw/skills/wewrite/toolkit/image_gen.py \\\n  --prompt \"温暖可爱的宠物风格插画，[描述文章核心主题的具体画面]\" \\\n  --output /root/.openclaw/skills/wewrite/output/cover_$(date +%Y-%m-%d).jpg \\\n  --size cover\n```\n3. 在 publish 命令中使用 --cover 参数传入封面图\n\n## 第7步：恢复 WeWrite 配置\n```bash\ncd /root/.openclaw/skills/wewrite\nmv config.yaml.bak config.yaml\n```\n\n## 第8步：记录选题到共享选题池\n\n记录到全局共享池：\n```bash\necho \"$(date +%Y-%m-%d) | 狗狗写文 | 文章标题 | 来源笔记名\" >> /root/.openclaw/workspace/workflows/shared-topics-used.md\n```\n\n同时记录到狗狗专用池：\n```bash\necho \"$(date +%Y-%m-%d) | 写文 | 文章标题 | 来源笔记名\" >> /root/.openclaw/workspace/workflows/dog-shared/topics-used.md\n```\n\n## 第9步：飞书通知峰峰\n用 message 工具发送飞书消息：\n- action: send\n- channel: feishu\n- target: user:ou_6be517fc21eba03cf7bef325a876d7f8\n- message 内容：🐕 狗狗生活小百科今日文章已就绪！标题：XXX，已存入草稿箱，请查看~\n\n## 注意事项\n- 选题只取笔记的一个片段角度，不要贪多\n- ⚠️ 封面图必须生成！这是硬性要求\n- ⚠️ 必须检查全局共享选题池 shared-topics-used.md，避免与所有任务重复\n- IMA 没新内容就从网上搜热点补充\n- 恢复 config.yaml 必须在发布后执行\n- 有错误记录但不停止",
+        "timeoutSeconds": 600,
+        "lightContext": true
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "feishu",
+        "to": "user:ou_6be517fc21eba03cf7bef325a876d7f8"
+      },
+      "state": {}
+    },
+    {
+      "id": "c357ff0d-c1b4-4d7a-ad43-0bfd8f25b715",
+      "name": "狗狗生活小百科-每日贴图",
+      "enabled": true,
+      "createdAtMs": 1778556971312,
+      "schedule": {
+        "kind": "cron",
+        "expr": "15 7 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "你是\"狗狗生活小百科\"公众号的自动贴图助手。请严格按以下步骤执行：\n\n## 第1步：加载凭证\n```bash\n# IMA 凭证\nIMA_CLIENT_ID=\"${IMA_OPENAPI_CLIENTID:-$(cat ~/.config/ima/client_id 2>/dev/null)}\"\nIMA_API_KEY=\"${IMA_OPENAPI_APIKEY:-$(cat ~/.config/ima/api_key 2>/dev/null)}\"\nima_api() {\n  curl -s -X POST \"https://ima.qq.com/$1\" \\\n    -H \"ima-openapi-clientid: $IMA_CLIENT_ID\" \\\n    -H \"ima-openapi-apikey: $IMA_API_KEY\" \\\n    -H \"Content-Type: application/json\" \\\n    -d \"$2\"\n}\n\n# OpenAI (ApiYi 代理)\nsource /root/.openclaw/workspace/.credentials/openai-env.sh\n```\n\n## 第2步：从 IMA 笔记中寻找选题素材\n搜索狗狗相关笔记，**只选取其中一个章节或几个段落**作为选题素材。\n\n```bash\nima_api \"openapi/note/v1/search_note_book\" '{\"search_type\": 0, \"query_info\": {\"title\": \"狗\"}, \"start\": 0, \"end\": 20}'\nima_api \"openapi/note/v1/search_note_book\" '{\"search_type\": 0, \"query_info\": {\"title\": \"爱犬\"}, \"start\": 0, \"end\": 20}'\n```\n\n对找到的笔记读取正文，**从中挑选一个具体角度**：\n```bash\nima_api \"openapi/note/v1/get_doc_content\" '{\"doc_id\": \"笔记ID\", \"target_content_format\": 0}'\n```\n\n也可以从\"狗狗星球\"知识库搜索：\n```bash\nima_api \"openapi/wiki/v1/search_knowledge\" '{\"query\": \"狗狗\", \"knowledge_base_id\": \"K2Nq_oMZRI2elIbbjOtos4mAgD9CUuDWpfqX-Mmnimo=\", \"cursor\": \"\"}'\n```\n\n## 第3步：检查已用选题（避免重复 — 双重检查）\n\n⚠️ 必须同时检查两个选题池：\n\n1. 全局共享选题池（包含所有4个任务的已用选题）：\n```bash\ncat /root/.openclaw/workspace/workflows/shared-topics-used.md\n```\n\n2. 狗狗专用选题池（向后兼容）：\n```bash\ncat /root/.openclaw/workspace/workflows/dog-shared/topics-used.md\n```\n\n从笔记内容中**挑选一个两个池中都没有的全新角度**。\n\n## 第4步：选题决策\n从笔记中挑选一个具体角度，要求：\n- 之前所有任务（写文和贴图、AI日报和狗狗）都没用过的角度\n- 适合用信息图/视觉化呈现\n- 内容实用、有科普价值\n\n## 第5步：确定发布账号\n根据内容类型判断：\n- 狗狗/宠物内容 → 使用 dog 账号（默认）\n- AI/技术内容 → 使用 default 贴图\n- 无法判断 → 飞书询问峰峰\n\n## 第6步：生成信息图\n读取 /root/.openclaw/workspace/skills/wechat-sticker-publisher/SKILL.md，按贴图流程执行。\n\n信息图生成要求：\n- 竖版 3:4 比例，知识科普风格\n- 标题用粗体衬线体，正文用黑体\n- 纯净白底，轻阴影，整洁排版\n- 不要水印、logo、多余装饰元素\n- 所有中文100%准确\n\n生成方式（通过 ApiYi 代理）：\ncurl -s --max-time 180 -X POST \"https://api.apiyi.com/v1/chat/completions\" -H \"Authorization: Bearer $OPENAI_API_KEY\" -H \"Content-Type: application/json\" -d '{\"model\": \"gpt-image-2-all\", \"messages\": [{\"role\": \"user\", \"content\": \"{信息图prompt}\"}]}'\n\n## 第7步：组装贴图并发布草稿\n用 wechat-sticker-publisher skill 将图片组装成贴图草稿。\n\n根据第5步确定的账号：\n\n狗狗/宠物内容：\n```bash\npython3 /root/.openclaw/workspace/skills/wechat-sticker-publisher/scripts/publish_sticker.py \\\n  --account dog \\\n  --image /path/to/封面.jpg \\\n  --image /path/to/内容图1.jpg \\\n  --title \"贴图标题\" \\\n  --text \"配文内容（300字左右）\"\n```\n\nAI/技术内容：\n```bash\npython3 /root/.openclaw/workspace/skills/wechat-sticker-publisher/scripts/publish_sticker.py \\\n  --account default \\\n  --image /path/to/封面.jpg \\\n  --image /path/to/内容图1.jpg \\\n  --title \"贴图标题\" \\\n  --text \"配文内容（300字左右）\"\n```\n\n## 第8步：记录选题到共享选题池\n\n记录到全局共享池：\n```bash\necho \"$(date +%Y-%m-%d) | 狗狗贴图 | 贴图标题 | 选题来源角度\" >> /root/.openclaw/workspace/workflows/shared-topics-used.md\n```\n\n同时记录到狗狗专用池：\n```bash\necho \"$(date +%Y-%m-%d) | 贴图 | 贴图标题 | 选题来源角度\" >> /root/.openclaw/workspace/workflows/dog-shared/topics-used.md\n```\n\n## 第9步：飞书通知峰峰\n用 message 工具发送飞书消息：\n- action: send\n- channel: feishu\n- target: user:ou_6be517fc21eba03cf7bef325a876d7f8\n- message 内容：🖼️ 狗狗生活小百科今日贴图已就绪！标题：XXX，已存入草稿箱，请查看~\n\n## 注意事项\n- ⚠️ 正文必须控制在300字左右（280-320字），贴图以图片为主\n- ⚠️ 使用 --account 参数选择账号，不要手动修改 wechat.env\n- ⚠️ 必须检查全局共享选题池 shared-topics-used.md，避免与所有任务重复\n- 选题只取笔记的一个片段角度，不要贪多\n- 贴图风格：知识科普信息图，竖版3:4\n- IMA 没新内容就从网上搜热点补充\n- 有错误记录但不停止，尽量完成全流程\n- 图片最多20张，第一张自动成为封面\n- 根据内容类型选择账号，无法判断时询问峰峰",
+        "timeoutSeconds": 600,
+        "lightContext": true
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "feishu",
+        "to": "user:ou_6be517fc21eba03cf7bef325a876d7f8"
+      },
+      "state": {}
+    },
+    {
+      "id": "ea01f6e5-64b9-4cdf-b597-51689d766a1d",
+      "agentId": "main",
+      "name": "AI日报-每日写文 (7:30)",
+      "enabled": true,
+      "createdAtMs": 1779212540754,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 7 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "你是「峰AI路」公众号的自动写文助手。每天独立完成：选题→调研→写文章→发布草稿。\n\n---\n\n## 第1步：用 aihot skill 挑选AI选题\n\n```bash\nUA=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 aihot-skill/0.2.0\"\ncurl -sH \"User-Agent: $UA\" \"https://aihot.virxact.com/api/public/items?mode=selected&take=30\" | python3 -c \"\nimport json, sys\ndata = json.load(sys.stdin)\nitems = data.get('items', [])\nfor i, item in enumerate(items[:20]):\n    cat = item.get('category', 'N/A')\n    print(f'{i+1}. [{cat}] {item.get(\"title\", \"N/A\")}')\n    if item.get('summary'):\n        print(f'   {item[\"summary\"][:120]}')\n    print(f'   {item.get(\"url\", \"\")}')\n    print()\n\"\n```\n\n选题标准：\n- 优先：模型发布 > 产品发布 > 行业动态 > 论文研究\n- 适合深度扩展成1500-2500字文章\n- 避免过于小众或纯技巧类话题\n\n⚠️ 检查全局共享选题池（必须！包含所有任务的已用选题）：\n```bash\ncat /root/.openclaw/workspace/workflows/shared-topics-used.md\n```\n从aihot列表中选择**未出现在共享池中的全新题材**。如果前3个热门都已被用，选第4个或更后面的。\n\n记录选题到全局共享池：\n```bash\necho \"$(date +%Y-%m-%d) | AI写文 | {选题标题} | aihot\" >> /root/.openclaw/workspace/workflows/shared-topics-used.md\n```\n\n同时记录到AI写文专用文件（向后兼容）：\n```bash\nmkdir -p /root/.openclaw/workspace/workflows/ai-daily\necho \"$(date +%Y-%m-%d) | {选题标题} | {来源URL}\" >> /root/.openclaw/workspace/workflows/ai-daily/topics-articles.md\n```\n\n---\n\n## 第2步：扩展调研\n\n1. 用 web_fetch 抓取选题原文\n2. 用 WebSearch 做3轮扩展搜索：\n   - \"{关键词} 详情 OR 发布\" — 官方信息\n   - \"{关键词} 评价 OR 影响\" — 各方观点\n   - \"{关键词} 数据 OR 测评\" — 客观数据\n3. 整理为调研摘要：核心事实5-8条 + 多方观点 + 数据支撑\n\n---\n\n## 第3步：写公众号文章\n\n读取 /root/.openclaw/skills/wewrite/SKILL.md 的主管道执行。\n\n加载配置：\n```bash\ncd /root/.openclaw/skills/wewrite && cat style.yaml\n```\n\n写作要求：\n- 账号：峰AI路（默认，无需切换config.yaml）\n- 字数：1500-2500字\n- 风格：专业但不枯燥，有观点有深度\n- 基于调研素材写作，禁止编造\n- 2-3个编辑锚点\n- 标题20-28字\n\n框架根据选题类型选择：热点解读型/纯观点型/清单型/对比型\n\n---\n\n## 第4步：生成封面图\n\n```bash\nsource /root/.openclaw/workspace/.credentials/openai-env.sh\n```\n\n从文章提取3-5个实体，生成封面提示词：\n```bash\ncurl -s --max-time 180 -X POST \"https://api.apiyi.com/v1/chat/completions\" \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"model\": \"gpt-image-2-all\", \"messages\": [{\"role\": \"user\", \"content\": \"{封面提示词}\"}]}'\n```\n\n如果是URL，下载：\n```bash\ncurl -sL \"{url}\" -o /root/.openclaw/skills/wewrite/output/cover_$(date +%Y-%m-%d).png\n```\n\n---\n\n## 第5步：发布到草稿箱\n\n```bash\npython3 /root/.openclaw/skills/wewrite/toolkit/cli.py publish {markdown} \\\n  --cover {封面图} \\\n  --theme professional-clean \\\n  --title \"{标题}\" \\\n  --digest \"{40字摘要}\"\n```\n\n---\n\n## 第6步：飞书通知\n\n用 message 工具：\n- action: send\n- channel: feishu\n- target: user:ou_6be517fc21eba03cf7bef325a876d7f8\n\n内容：\n📝 AI日报文章已就绪！\n标题：{标题}\n摘要：{摘要}\n状态：已存入峰AI路草稿箱\n选题来源：{aihot原始条目}\n\n---\n\n## 注意事项\n- 账号固定峰AI路（默认），不改config.yaml\n- aihot不可用时用 WebSearch \"今日AI热点\" 替代\n- 图片生成失败记录prompt但不停止\n- ⚠️ 必须检查全局共享选题池 shared-topics-used.md，避免与所有任务重复",
+        "timeoutSeconds": 900,
+        "lightContext": true
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "feishu",
+        "to": "user:ou_6be517fc21eba03cf7bef325a876d7f8"
+      },
+      "state": {}
+    },
+    {
+      "id": "c9bfcdc1-5434-495b-9810-c6d40006400e",
+      "agentId": "main",
+      "name": "AI日报-每日贴图 (7:45)",
+      "enabled": true,
+      "createdAtMs": 1779212540754,
+      "schedule": {
+        "kind": "cron",
+        "expr": "45 7 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "你是「峰AI路」公众号的自动贴图助手。每天独立完成：选题→调研→生成信息图→发布草稿。与写文任务完全无关，选题独立。\n\n---\n\n## 第1步：用 aihot skill 挑选AI贴图选题\n\n```bash\nUA=\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 aihot-skill/0.2.0\"\ncurl -sH \"User-Agent: $UA\" \"https://aihot.virxact.com/api/public/items?mode=selected&take=30\" | python3 -c \"\nimport json, sys\ndata = json.load(sys.stdin)\nitems = data.get('items', [])\nfor i, item in enumerate(items[:20]):\n    cat = item.get('category', 'N/A')\n    print(f'{i+1}. [{cat}] {item.get(\"title\", \"N/A\")}')\n    if item.get('summary'):\n        print(f'   {item[\"summary\"][:120]}')\n    print(f'   {item.get(\"url\", \"\")}')\n    print()\n\"\n```\n\n选题标准（与写文不同角度）：\n- 优先选择适合信息图/视觉化呈现的话题\n- 数据对比、功能盘点、技术原理图解类最佳\n- 如果今天热点不适合做信息图，也可以从最近3天精选中挑\n\n⚠️ 检查全局共享选题池（必须！包含所有任务的已用选题）：\n```bash\ncat /root/.openclaw/workspace/workflows/shared-topics-used.md\n```\n从aihot列表中选择**未出现在共享池中的全新题材**。注意避开AI写文已选的题材，选一个不同角度的话题。\n\n记录选题到全局共享池：\n```bash\necho \"$(date +%Y-%m-%d) | AI贴图 | {选题标题} | aihot\" >> /root/.openclaw/workspace/workflows/shared-topics-used.md\n```\n\n同时记录到AI贴图专用文件（向后兼容）：\n```bash\nmkdir -p /root/.openclaw/workspace/workflows/ai-daily\necho \"$(date +%Y-%m-%d) | {选题标题} | {来源URL}\" >> /root/.openclaw/workspace/workflows/ai-daily/topics-stickers.md\n```\n\n---\n\n## 第2步：信息调研\n\n用 WebSearch 搜索补充信息：\n- \"{关键词} 功能 OR 特点 OR 数据\" — 核心信息\n- \"{关键词} 对比 OR 评测\" — 对比数据\n\n整理为适合信息图展示的要点清单（3-4个核心要点，每个要点配具体数据/数字）。\n\n---\n\n## 第3步：生成知识科普信息图\n\n```bash\nsource /root/.openclaw/workspace/.credentials/openai-env.sh\n```\n\n生成竖版3:4知识科普信息图，prompt模板：\n\n画一张3:4竖版中文知识科普信息图，主题为【{主题}】。\n\n整体风格：现代百科风格，兼具图鉴感与信息结构感，像一本高级百科全书的跨页内页。\n\n布局要求：\n- 顶部：粗体衬线大标题 + 一句话副标题（灰色细体）\n- 左侧或上方：一幅主视觉插画（扁平矢量风格，低饱和配色），占画面约1/3\n- 右侧或下方：3-4个圆角模块化信息卡片，2×2网格排列，整齐对齐\n- 每张卡片：小号加粗中文标签 + 一句话核心洞察 + 一个放大的关键数字或关键词\n\n配色：主色【科技蓝】+ 浅灰背景 + 白色卡片 + 少量点缀色\n\n文字要求：\n- 标题用粗体衬线体，正文用黑体\n- 缩略图尺寸下仍清晰可读\n- 所有中文100%准确，禁止乱码，中文渲染质量拉满\n\n约束：不是杂志封面，不是电影海报，不是广告图，是知识科普信息图。不要水印、不要logo、不要多余装饰元素。纯净白底，轻阴影，整洁排版，信息密度高但不拥挤。\n\n调用生成：\n```bash\ncurl -s --max-time 180 -X POST \"https://api.apiyi.com/v1/chat/completions\" \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"model\": \"gpt-image-2-all\", \"messages\": [{\"role\": \"user\", \"content\": \"{信息图prompt}\"}]}'\n```\n\n下载图片（如果是URL）：\n```bash\ncurl -sL \"{url}\" -o /root/.openclaw/workspace/workflows/ai-daily/sticker_$(date +%Y-%m-%d).png\n```\n\n如果 gpt-image-2-all 失败，换 gpt-image-2 重试一次。\n\n---\n\n## 第4步：组装贴图并发布草稿\n\n写300字左右配文（280-320字），围绕信息图主题展开。\n\n```bash\npython3 /root/.openclaw/workspace/skills/wechat-sticker-publisher/scripts/publish_sticker.py \\\n  --image /root/.openclaw/workspace/workflows/ai-daily/sticker_$(date +%Y-%m-%d).png \\\n  --title \"{贴图标题}\" \\\n  --text \"{300字配文}\"\n```\n\n---\n\n## 第5步：记录并通知\n\n记录选题到全局共享池：\n```bash\necho \"$(date +%Y-%m-%d) | AI贴图 | {贴图标题} | aihot\" >> /root/.openclaw/workspace/workflows/shared-topics-used.md\n```\n\n同时记录到专用文件：\n```bash\necho \"$(date +%Y-%m-%d) | {贴图标题} | {来源URL}\" >> /root/.openclaw/workspace/workflows/ai-daily/topics-stickers.md\n```\n\n飞书通知（message 工具）：\n- action: send\n- channel: feishu\n- target: user:ou_6be517fc21eba03cf7bef325a876d7f8\n\n内容：\n🖼️ AI日报贴图已就绪！\n标题：{贴图标题}\n配文：{30字摘要}\n状态：已存入峰AI路草稿箱\n选题来源：{aihot原始条目}\n\n---\n\n## 注意事项\n- 账号固定峰AI路（默认），不改config.yaml\n- aihot不可用时用 WebSearch \"今日AI热点\" 替代\n- 图片生成失败记录prompt但不停止\n- ⚠️ 必须检查全局共享选题池 shared-topics-used.md，避免与所有任务重复\n- 信息图必须是竖版3:4知识科普风格",
+        "timeoutSeconds": 900,
+        "lightContext": true
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "feishu",
+        "to": "user:ou_6be517fc21eba03cf7bef325a876d7f8"
+      },
+      "state": {}
+    }
+  ]
+}
